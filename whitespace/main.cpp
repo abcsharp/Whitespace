@@ -6,8 +6,6 @@
 #include <regex>
 #include <algorithm>
 
-#define DEBUG
-
 typedef long long base_unit_type;
 
 struct state;
@@ -420,8 +418,10 @@ wsobject inputoutput(std::string::const_iterator& it,char space,char tab,char ne
 			return wsobject(
 				[](state& stateobj)
 				{
-					stateobj.data.push_back(std::cin.get());
-					for(;std::cin.get()!='\n';) continue;
+					auto a=stateobj.data.back();
+					stateobj.data.pop_back();
+					if(a>=stateobj.heap.size()) stateobj.heap.resize((a+1)*2);
+					stateobj.heap[a]=std::cin.get();
 					++stateobj.instptr;
 				});
 		}else if(*it==tab){
@@ -432,8 +432,11 @@ wsobject inputoutput(std::string::const_iterator& it,char space,char tab,char ne
 				[](state& stateobj)
 				{
 					base_unit_type number=0;
+					auto a=stateobj.data.back();
+					stateobj.data.pop_back();
+					if(a>=stateobj.heap.size()) stateobj.heap.resize((a+1)*2);
 					std::cin>>number;
-					stateobj.data.push_back(number);
+					stateobj.heap[a]=number;
 					++stateobj.instptr;
 				});
 		}
